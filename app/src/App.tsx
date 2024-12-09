@@ -2,11 +2,10 @@ import { Router, Route } from "@solidjs/router";
 
 function App() {
   return (
+    
+      <div class="app">hello world
+      <main>
       
-      <div class="app">
-        
-        <main>
-        
         </main>
       </div>
     
