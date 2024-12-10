@@ -1,50 +1,64 @@
-import { createContext, useContext, createSignal, JSX } from "solid-js";
-import { AnchorWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
-import { Transaction } from "@solana/web3.js";
-import { VersionedTransaction } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
+import { createContext, createSignal, useContext, JSX } from "solid-js";
 
+interface WalletContextType {
+  wallet: () => any;
+  connectWallet: () => Promise<void>;
+  signTransaction: (transaction: any) => Promise<any>;
+  isConnected: boolean;
+  publicKey: PublicKey;
+}
+declare global {
+  interface Window {
+      solana: {
+        signTransaction(transaction: Transaction): Promise<Transaction>;
+        SignAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
+        connect: () => Promise<{ publicKey: { toString: () => string } }>;
+        publicKey: PublicKey;
+        isConnected: boolean;
+      };
+  }
+}
 
+const WalletContext = createContext<WalletContextType>();
 
-
-// Create the context with a default value that prevents `undefined`
-const WalletContext = createContext<AnchorWallet | undefined>(undefined);
-
-export const WalletProvider = (props: { children: JSX.Element }) => {
-  const [walletConnected, setWalletConnected] = createSignal(false);
-  const [publicKey, setPublicKey] = createSignal("");
+export function WalletProvider(props: { children: JSX.Element }) {
+  const [wallet, setWallet] = createSignal<any>(null);
 
   const connectWallet = async () => {
     try {
-      const { solana } = window as any;
-      if (!solana) {
-        alert("Please install Phantom wallet!");
-        window.open("https://phantom.app/", "_blank");
+      if (!window.solana) {
+        alert('Please install Phantom wallet');
         return;
       }
-
-      const response = await solana.connect();
-      setPublicKey(response.publicKey.toString());
-      setWalletConnected(true);
-    } catch (error) {
-      console.error("Connection error:", error);
-      alert("Failed to connect wallet. Please try again.");
+      const response = await window.solana.connect();
+      setWallet(response);
+    } catch (err) {
+      console.error("Error connecting wallet:", err);
     }
   };
 
+  const signTransaction = async (transaction: any) => {
+    if (!wallet()) {
+      throw new Error('Wallet not connected');
+    }
+    return await window.solana.signTransaction(transaction);
+  };
+  const isConnected = window.solana.isConnected;
+  const publicKey = window.solana.publicKey;
+
   return (
-    <WalletContext.Provider value={{ publicKey: new PublicKey(publicKey()), signTransaction<T extends Transaction | VersionedTransaction>(transaction: T): Promise<T>;
-      ,signAllTransactions<T extends Transaction | VersionedTransaction>(transactions: T[]): Promise<T[]>; }}>
+    <WalletContext.Provider value={{ wallet, connectWallet, signTransaction, isConnected, publicKey }}>
       {props.children}
     </WalletContext.Provider>
   );
-};
+}
 
-// Custom hook to access the wallet context
-export const useWallet = () => {
+// Hook to use the wallet context
+export function useWallet() {
   const context = useContext(WalletContext);
   if (!context) {
     throw new Error("useWallet must be used within a WalletProvider");
   }
   return context;
-};
+}

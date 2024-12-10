@@ -11,10 +11,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@project-serum/anchor": "^0.26.0",
-    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana-program/system": "^0.6.2",
     "@solana/web3.js": "^1.95.8",
     "@solidjs/router": "^0.8.2",
+    "dotenv": "^16.4.7",
     "solid-js": "^1.7.8"
   },
   "devDependencies": {

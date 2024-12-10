@@ -1,26 +1,27 @@
-import { useWallet } from "./WalletConnect";
+
 import styles from "./NavBar.module.css";
+import { useWallet } from './WalletConnect';
 
 function NavBar() {
   const wallet = useWallet();
-  const { walletConnected = false, publicKey = "", connectWallet = () => {} } = wallet ?? {};
+  
 
   return (
     <nav class={styles.navbar}>
       <div class={styles.navContent}>
         <h1 class={styles.logo}>Gridify</h1>
         <div class={styles.walletSection}>
-          {walletConnected && (
+          {wallet.isConnected && (
             <span class={styles.publicKey}>
-              {publicKey.slice(0, 4)}...{publicKey.slice(-4)}
+              {wallet.publicKey.toString().slice(0, 4)}...{wallet.publicKey.toString().slice(-4)}
             </span>
           )}
           <button 
             class={styles.connectButton} 
-            onClick={connectWallet}
-            disabled={walletConnected}
+            onClick={wallet.connectWallet}
+            disabled={wallet.isConnected}
           >
-            {walletConnected ? "Connected ✓" : "Connect Wallet"}
+            {wallet.isConnected ? "Connected ✓" : "Connect Wallet"}
           </button>
         </div>
       </div>

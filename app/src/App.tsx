@@ -4,16 +4,14 @@ import RegisterDevice from "./pages/RegisterDevice";
 import CreateGrid from "./pages/CreateGrid";
 import GridMonitor from "./pages/GridMonitor";
 import SelectGrid from "./pages/SelectGrid";
-import { WalletProvider } from "./pages/WalletConnect";
-import NavBar from "./pages/NavBar";
+
 
 
 function App() {
   return (
     
     <div class="app">
-      <WalletProvider>
-      <NavBar />
+      
       <main>
       <Router>
           <Route path="/" component={Home} />
@@ -21,9 +19,10 @@ function App() {
           <Route path="/create-grid" component={CreateGrid} />
           <Route path="/monitor" component={GridMonitor} />
           <Route path="/select-grid" component={SelectGrid} />
-      </Router>
+          </Router>
         </main>
-        </WalletProvider>
+        
+      
       </div>
     
   );
