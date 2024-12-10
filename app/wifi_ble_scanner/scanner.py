@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from bleak import BleakScanner
 from flask_cors import CORS
 
+
 app = Flask(__name__)
 CORS(app)
 
@@ -19,7 +20,7 @@ async def get_ble_devices():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app
+
 
 async def get_ble_devices_async():
     devices = await BleakScanner.discover()

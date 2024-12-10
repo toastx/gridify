@@ -1,0 +1,312 @@
+{
+    "version": "0.1.0",
+    "name": "gridify",
+    "instructions": [
+      {
+        "name": "register",
+        "accounts": [
+          {
+            "name": "deviceAccount",
+            "isMut": true,
+            "isSigner": true
+          },
+          {
+            "name": "gridAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "owner",
+            "isMut": true,
+            "isSigner": true
+          },
+          {
+            "name": "systemProgram",
+            "isMut": false,
+            "isSigner": false
+          }
+        ],
+        "args": [
+          {
+            "name": "gridId",
+            "type": "publicKey"
+          }
+        ]
+      },
+      {
+        "name": "ping",
+        "accounts": [
+          {
+            "name": "deviceAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "owner",
+            "isMut": false,
+            "isSigner": true
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "faulty",
+        "accounts": [
+          {
+            "name": "deviceAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "owner",
+            "isMut": false,
+            "isSigner": true
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "remove",
+        "accounts": [
+          {
+            "name": "deviceAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "owner",
+            "isMut": false,
+            "isSigner": true
+          },
+          {
+            "name": "gridAccount",
+            "isMut": false,
+            "isSigner": false
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "getDevice",
+        "accounts": [
+          {
+            "name": "deviceAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "owner",
+            "isMut": false,
+            "isSigner": true
+          }
+        ],
+        "args": [],
+        "returns": {
+          "defined": "DeviceInfo"
+        }
+      },
+      {
+        "name": "claim",
+        "accounts": [
+          {
+            "name": "deviceAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "owner",
+            "isMut": false,
+            "isSigner": true
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "newGrid",
+        "accounts": [
+          {
+            "name": "gridAccount",
+            "isMut": true,
+            "isSigner": true
+          },
+          {
+            "name": "manager",
+            "isMut": true,
+            "isSigner": true
+          },
+          {
+            "name": "systemProgram",
+            "isMut": false,
+            "isSigner": false
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "transfer",
+        "accounts": [
+          {
+            "name": "sender",
+            "isMut": true,
+            "isSigner": true
+          },
+          {
+            "name": "recipient",
+            "isMut": false,
+            "isSigner": false
+          },
+          {
+            "name": "mintAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "senderTokenAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "recipientTokenAccount",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "tokenProgram",
+            "isMut": false,
+            "isSigner": false
+          },
+          {
+            "name": "associatedTokenProgram",
+            "isMut": false,
+            "isSigner": false
+          },
+          {
+            "name": "systemProgram",
+            "isMut": false,
+            "isSigner": false
+          }
+        ],
+        "args": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    ],
+    "accounts": [
+      {
+        "name": "DeviceAccount",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "owner",
+              "type": "publicKey"
+            },
+            {
+              "name": "gridId",
+              "type": "publicKey"
+            },
+            {
+              "name": "isActive",
+              "type": "bool"
+            },
+            {
+              "name": "fallbackDevices",
+              "type": {
+                "vec": "publicKey"
+              }
+            },
+            {
+              "name": "totalUptime",
+              "type": "u64"
+            },
+            {
+              "name": "lastPing",
+              "type": "i64"
+            },
+            {
+              "name": "pendingRewards",
+              "type": "f64"
+            }
+          ]
+        }
+      },
+      {
+        "name": "GridAccount",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "manager",
+              "type": "publicKey"
+            },
+            {
+              "name": "devices",
+              "type": {
+                "vec": "publicKey"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "types": [
+      {
+        "name": "DeviceInfo",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "owner",
+              "type": "publicKey"
+            },
+            {
+              "name": "isActive",
+              "type": "bool"
+            },
+            {
+              "name": "fallbackDevices",
+              "type": {
+                "vec": "publicKey"
+              }
+            },
+            {
+              "name": "totalUptime",
+              "type": "u64"
+            },
+            {
+              "name": "lastPing",
+              "type": "i64"
+            }
+          ]
+        }
+      }
+    ],
+    "errors": [
+      {
+        "code": 6000,
+        "name": "DeviceAlreadyFaulty",
+        "msg": "Device is already marked as faulty."
+      },
+      {
+        "code": 6001,
+        "name": "NoRewardsPending",
+        "msg": "No rewards are pending for this device."
+      },
+      {
+        "code": 6002,
+        "name": "InvalidGridId",
+        "msg": "Invalid grid ID."
+      },
+      {
+        "code": 6003,
+        "name": "DeviceNotInGrid",
+        "msg": "Device is not in the grid."
+      }
+    ],
+    "metadata": {
+      "address": "3ZeNA6X2Nf14Yx2AGq9WHU9fYqjVnoMrruxmBE9ZnXka"
+    }
+  }

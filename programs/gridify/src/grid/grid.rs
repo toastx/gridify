@@ -66,7 +66,7 @@ pub fn claim_rewards(ctx: Context<ClaimRewards>) -> Result<()> {
 pub fn create_grid(ctx: Context<CreateGrid>) -> Result<()> {
     let grid_account = &mut ctx.accounts.grid_account;
     grid_account.manager = *ctx.accounts.manager.key;
-    grid_account.devices = vec![]; // Start with an empty device list
+    grid_account.devices = vec![];
     Ok(())
 }
 

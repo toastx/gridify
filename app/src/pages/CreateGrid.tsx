@@ -1,15 +1,23 @@
 import { createSignal } from "solid-js";
 import styles from "./CreateGrid.module.css";
+import { useWallet } from "./WalletConnect";
+import { createGrid } from "./utils/utils";
+
 
 function CreateGrid() {
   const [gridName, setGridName] = createSignal("");
   const [gridCapacity, setGridCapacity] = createSignal("");
   const [location, setLocation] = createSignal("");
   const [devices, setDevices] = createSignal<string[]>([]);
+  const wallet = useWallet();
 
-  const handleSubmit = (e: Event) => {
-    e.preventDefault();
-    // Implement grid creation logic here
+ const handleSubmit = async (e: Event) => {
+      e.preventDefault();
+      
+     let tx = await createGrid(wallet);
+     
+
+    
   };
 
   return (
