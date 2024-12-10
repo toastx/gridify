@@ -11,13 +11,13 @@ void setup() {
 
   // Wi-Fi setup
   // BLE setup
-  BLEDevice::init("Solar Data Provider");
+  BLEDevice::init("ESP32 Device 1");
   BLEServer* pServer = BLEDevice::createServer();
   BLEService* pService = pServer->createService(SERVICE_UUID);
   pService->start();
   BLEDevice::getAdvertising()->start();
   Serial.println("BLE Advertising Started");
-  ble = 1;
+  
 }
 
 void loop() {

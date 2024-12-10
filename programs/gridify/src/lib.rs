@@ -10,23 +10,29 @@ declare_id!("3ZeNA6X2Nf14Yx2AGq9WHU9fYqjVnoMrruxmBE9ZnXka");
 pub mod gridify {
     use super::*;
 
-    pub fn register(ctx: Context<RegisterDevice>, device_id: String, price_per_request: u64) -> Result<()> {
-        register_device(ctx, device_id, price_per_request)
+    pub fn register(ctx: Context<RegisterDevice>, grid_id: Pubkey) -> Result<()> {
+        register_device(ctx, grid_id)
     }
-    pub fn add_funds(ctx: Context<AddFunds>, amount: u64) -> Result<()> {
-        add_funds_to_account(ctx, amount)
+    pub fn ping(ctx: Context<PingDevice>) -> Result<()> {
+        ping_device(ctx)
     }
-    pub fn subscribe(ctx: Context<RequestData>) -> Result<()> {
-        subscribe_to_data(ctx)
+    pub fn faulty(ctx: Context<MarkFaulty>) -> Result<()> {
+        mark_as_faulty(ctx)
+    }
+    pub fn remove(ctx: Context<RemoveDevice>) -> Result<()> {
+        remove_device(ctx)
+    }
+    pub fn get_device(ctx: Context<GetDeviceInfo>) -> Result<DeviceInfo> {
+        get_device_info(ctx)
+    }
+    pub fn claim(ctx: Context<ClaimRewards>) -> Result<()> {
+        claim_rewards(ctx)
+    }
+    pub fn new_grid(ctx: Context<CreateGrid>) -> Result<()> {
+        create_grid(ctx)
     }
     pub fn transfer(ctx: Context<TransferTokens>, amount: u64) -> Result<()> {
         transfer_tokens(ctx, amount)
-    }
-    pub fn mint(ctx: Context<MintToken>, amount: u64) -> Result<()> {
-        mint_token(ctx, amount)
-    }
-    pub fn active_subscription(ctx: Context<ShowActiveSubscription>) -> Result<()> {
-        show_active_subscription(ctx)
     }
 
 }

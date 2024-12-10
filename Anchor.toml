@@ -11,7 +11,7 @@ gridify = "3ZeNA6X2Nf14Yx2AGq9WHU9fYqjVnoMrruxmBE9ZnXka"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "/home/toastx/.config/solana/id.json"
 
 [scripts]

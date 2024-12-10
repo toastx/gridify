@@ -19,6 +19,8 @@ async def get_ble_devices():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app
+
 async def get_ble_devices_async():
     devices = await BleakScanner.discover()
     return devices
