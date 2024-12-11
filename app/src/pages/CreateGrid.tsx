@@ -1,7 +1,10 @@
 import { createSignal } from "solid-js";
 import styles from "./CreateGrid.module.css";
-import { createGrid,sendTransaction } from "./utils/utils";
+import { createGrid,fetchGrids,sendTransaction } from "./utils/utils";
 import { useWallet } from "./WalletConnect";
+
+
+
 
 function CreateGrid() {
   const [gridName, setGridName] = createSignal("");
@@ -14,10 +17,12 @@ function CreateGrid() {
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     
-    const tx = await createGrid(wallet);
-    let txn = await wallet.signTransaction(tx);
-    let url = await sendTransaction(txn);
-    alert(url);
+    // const tx = await createGrid(wallet);
+    // let txn = await wallet.signTransaction(tx);
+    // let url = await sendTransaction(txn);
+    // alert(url);
+    let res = await fetchGrids(wallet)
+    console.log(res)
 
   };
 
