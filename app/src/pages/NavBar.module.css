@@ -1,24 +1,19 @@
 .navbar {
-    background-color: #1e40af;
+    background-color: #879ce2;
     padding: 1rem 2rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    
+    
   }
   
   .navContent {
-    max-width: 1200px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
   
   .logo {
-    color: white;
+    color: rgb(0, 0, 0);
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: -0.5px;
@@ -31,8 +26,8 @@
   }
   
   .publicKey {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
+    background-color: rgb(117, 124, 226);
+    color: #000000;
     font-family: monospace;
     font-size: 0.9rem;
     padding: 0.5rem 0.75rem;
@@ -41,8 +36,8 @@
   }
   
   .connectButton {
-    background-color: white;
-    color: #1e40af;
+    background-color: rgb(117, 124, 226);
+    color: #292b31;
     padding: 0.5rem 1.25rem;
     border-radius: 0.5rem;
     border: none;

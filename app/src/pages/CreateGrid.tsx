@@ -1,16 +1,24 @@
 import { createSignal } from "solid-js";
 import styles from "./CreateGrid.module.css";
-import { createGrid } from "./utils/utils";
+import { createGrid,sendTransaction } from "./utils/utils";
+import { useWallet } from "./WalletConnect";
+
 function CreateGrid() {
   const [gridName, setGridName] = createSignal("");
   const [gridCapacity, setGridCapacity] = createSignal("");
   const [location, setLocation] = createSignal("");
   const [devices, setDevices] = createSignal<string[]>([]);
+  const wallet = useWallet();
 
   
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-   
+    
+    const tx = await createGrid(wallet);
+    let txn = await wallet.signTransaction(tx);
+    let url = await sendTransaction(txn);
+    alert(url);
+
   };
 
   return (
@@ -30,7 +38,7 @@ function CreateGrid() {
         </div>
 
         <div class={styles.formGroup}>
-          <label class={styles.label}>Total Capacity (kW)</label>
+          <label class={styles.label}>Total Capacity</label>
           <input
             type="number"
             value={gridCapacity()}

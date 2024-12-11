@@ -1,6 +1,7 @@
 import { createSignal, createEffect, For } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import styles from "./RegisterDevice.module.css";
+import { useWallet } from "./WalletConnect";
 
 interface BluetoothDevice {
   name: string;
@@ -12,7 +13,7 @@ function RegisterDevice() {
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal("");
   const navigate = useNavigate();
-
+  const wallet = useWallet();
   const scanDevices = async () => {
     setLoading(true);
     setError("");

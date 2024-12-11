@@ -1,26 +1,35 @@
-import { Connection, PublicKey, Transaction, Keypair, sendAndConfirmTransaction,} from '@solana/web3.js';
+import { Signer,Connection, PublicKey, Transaction, Keypair, sendAndConfirmTransaction,} from '@solana/web3.js';
 import idl from "./idl.json"
-
+import { Program,Idl } from '@coral-xyz/anchor';
 const SYSTEM_PROGRAM_ADDRESS = new PublicKey("11111111111111111111111111111111")  ;
 
 
+
+const parsedIdl = JSON.parse(JSON.stringify(idl)) as Idl;
+const connection = new Connection("https://api.devnet.solana.com");
 const programId = new PublicKey(idl.metadata.address);
-const program = JSON.parse(JSON.stringify(idl));
+const program = new Program(parsedIdl, programId, {connection});
+
 
 
 export async function createGrid(wallet: any) {
-  
+  let manager = new PublicKey(wallet.publicKey());
+  console.log(manager.toString());
+  let gridAccount = Keypair.generate()
+  console.log(wallet.publicKey());
   try {
     const tx = await program.methods
       .newGrid()
       .accounts({
-        gridAccount: Keypair.generate().publicKey,
-        manager: wallet.publicKey,
+        gridAccount: gridAccount.publicKey,
+        manager: manager,
         systemProgram: SYSTEM_PROGRAM_ADDRESS,
       })
-      .rpc();
+      .signers([gridAccount])
+      .transaction();
     
-    console.log("Grid created! Transaction:", tx);
+    tx.feePayer = manager;
+    tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     return tx
 
   } catch (error) {
@@ -46,6 +55,13 @@ export async function registerDevice(deviceId: string,wallet: any) {
     console.error("Error registering device:", error);
     throw error;
   }
+}
+
+export async function sendTransaction(tx: Transaction) { 
+  console.log(tx);
+  const signature = await connection.sendRawTransaction(tx.serialize());
+  let stx = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+  return stx;
 }
 
 

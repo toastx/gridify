@@ -15,7 +15,8 @@
     "@solana/web3.js": "^1.95.8",
     "@solidjs/router": "^0.8.2",
     "dotenv": "^16.4.7",
-    "solid-js": "^1.7.8"
+    "solid-js": "^1.7.8",
+    "@originjs/vite-plugin-commonjs": "^1.0.3"
   },
   "devDependencies": {
     "typescript": "^5.0.2",

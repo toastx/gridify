@@ -1,13 +1,13 @@
 .container {
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #fefefe;
   padding: 2rem;
 }
 
 .hero {
   text-align: center;
   padding: 2rem 1rem;
-  background-color: #1e40af;
+  background-color: #879ce2;
   border-radius: 1rem;
   margin-bottom: 4rem;
   color: white;
