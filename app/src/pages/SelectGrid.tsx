@@ -1,11 +1,16 @@
 import { createSignal, createEffect } from "solid-js";
 import { useNavigate, useLocation } from "@solidjs/router";
 import styles from "./SelectGrid.module.css";
+import { registerDevice, sendTransaction } from "./utils/utils";
+import { PublicKey } from "@solana/web3.js";
+import { useWallet } from "./WalletConnect";
 
 
 interface Grid {
-  id: string;
   name: string;
+  address: string;
+  capacity: string;
+  location: string;
   status: string;
 }
 
@@ -16,6 +21,7 @@ function SelectGrid() {
   const [error, setError] = createSignal("");
   const location = useLocation();
   const navigate = useNavigate();
+  const wallet = useWallet()
   const device = location.state as {
       name: string;
       address: any; device?: { address: string, name: string } 
@@ -30,22 +36,18 @@ function SelectGrid() {
       setGrids(data);
     } catch (err) {
       setError("Failed to fetch grids. Server might be offline.");
-      // Temporary mock data while endpoint is not active
-      setGrids([
-        { id: "grid_1", name: "Main Grid", status: "active" },
-        { id: "grid_2", name: "Backup Grid", status: "active" },
-        { id: "grid_3", name: "Test Grid", status: "maintenance" },
-      ]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGridSelect = async (gridId: string) => {
+  const handleGridSelect = async (grid: string) => {
     try {
-      // Here you would typically make an API call to register the device to the grid
-      console.log(`Registering device ${device.address} to grid ${gridId}`);
-      // Navigate to success page or dashboard
+      let tx = await registerDevice(new PublicKey(grid), wallet)
+      let txn = await wallet.signTransaction(tx.transaction);
+      let url = await sendTransaction(txn);
+      
+      console.log(`Registering device ${device.address} to grid ${grid}`);
       navigate('/dashboard', { state: { success: true }});
     } catch (err) {
       setError("Failed to register device to grid.");
@@ -68,6 +70,7 @@ function SelectGrid() {
       <div class={styles.deviceInfo}>
         <span class={styles.deviceName}>{device?.name || 'Unknown Device'}</span>
         <span class={styles.deviceAddress}>{device?.address}</span>
+        
       </div>
 
       {error() && <p class={styles.error}>{error()}</p>}
@@ -80,9 +83,11 @@ function SelectGrid() {
             <div 
               class={styles.gridItem} 
               classList={{ [styles.inactive]: grid.status !== 'active' }}
-              onClick={() => grid.status === 'active' && handleGridSelect(grid.id)}
+              onClick={() => grid.status === 'active' && handleGridSelect(grid.address)}
             >
               <span class={styles.gridName}>{grid.name}</span>
+              <span class={styles.gridName}>{grid.location}</span>
+              <span class={styles.gridName}>{grid.capacity}</span>
               <span class={styles.gridStatus}>{grid.status}</span>
             </div>
           ))

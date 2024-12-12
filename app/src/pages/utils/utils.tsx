@@ -5,21 +5,15 @@ import { ShdwDrive } from '@shadow-drive/sdk';
 const SYSTEM_PROGRAM_ADDRESS = new PublicKey("11111111111111111111111111111111")  ;
 
 
-
 const parsedIdl = JSON.parse(JSON.stringify(idl)) as Idl;
 const connection = new Connection("https://api.devnet.solana.com");
 const programId = new PublicKey(idl.metadata.address);
 const program = new Program(parsedIdl, programId, { connection });
 
 
-
-
-
 export async function createGrid(wallet: any) {
   let manager = new PublicKey(wallet.publicKey());
-  console.log(manager.toString());
   let gridAccount = Keypair.generate()
-  console.log(wallet.publicKey());
   try {
     const tx = await program.methods
       .newGrid()
@@ -34,7 +28,10 @@ export async function createGrid(wallet: any) {
     tx.feePayer = manager;
     tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     tx.partialSign(gridAccount)
-    return tx
+    return {
+      transaction: tx,
+      gridAccountPublicKey: gridAccount.publicKey,
+    }
 
   } catch (error) {
     console.error("Error creating grid:", error);
@@ -42,19 +39,29 @@ export async function createGrid(wallet: any) {
   }
 }
 
-export async function registerDevice(deviceId: string,wallet: any) {
+export async function registerDevice(grid: PublicKey, wallet: any) {
+  let owner = new PublicKey(wallet.publicKey());
+  let deviceAccount = Keypair.generate()
   try {
     const tx = await program.methods
-      .register(deviceId)
+      .register(grid)
       .accounts({
-        deviceAccount: Keypair.generate().publicKey,
-        owner: wallet.publicKey,
+        gridAccount: deviceAccount.publicKey,
+        owner: owner,
         systemProgram: SYSTEM_PROGRAM_ADDRESS,
       })
-      .rpc();
+      .signers([deviceAccount])
+      .transaction()
     
-    console.log("Device registered! Transaction:", tx);
-    return tx;
+      tx.feePayer = owner;
+      tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+      tx.partialSign(deviceAccount)
+    
+      return {
+        transaction: tx,
+        deviceAccountPublicKey: deviceAccount.publicKey,
+      }
+    
   } catch (error) {
     console.error("Error registering device:", error);
     throw error;
@@ -62,7 +69,6 @@ export async function registerDevice(deviceId: string,wallet: any) {
 }
 
 export async function sendTransaction(tx: Transaction) { 
-  console.log(tx);
   const signature = await connection.sendRawTransaction(tx.serialize());
   let stx = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
   return stx;

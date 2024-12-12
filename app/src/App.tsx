@@ -6,21 +6,16 @@ import CreateGrid from "./pages/CreateGrid";
 import GridMonitor from "./pages/GridMonitor";
 import SelectGrid from "./pages/SelectGrid";
 import NavBar from "./pages/NavBar";
-import Admin from "./pages/admin"
-
-
 
 function App() {
   return (
-    
     <div>
       <WalletProvider>
       <NavBar/>
         <main >
         <Router>
         <Routes>
-          <Route path="/" component={Home} />
-          <Route path="/admin" component={Admin} />    
+          <Route path="/" component={Home} />   
           <Route path="/register" component={RegisterDevice} />
           <Route path="/create-grid" component={CreateGrid} />
           <Route path="/monitor" component={GridMonitor} />
@@ -30,7 +25,6 @@ function App() {
         </main>
       </WalletProvider>
       </div>
-    
   );
 }
 
