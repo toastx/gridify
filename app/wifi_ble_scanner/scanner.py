@@ -44,7 +44,9 @@ async def post_grid():
 @app.route("/grids",methods=["GET"])
 async def grids():
     grids = retrieve_grids_from_pinata()
+    print(grids)
     grid_data = get_grid_objects(grids)
+    
     return({
         "grids": grid_data,
     })

@@ -15,7 +15,9 @@ def get_grid_objects(obj):
         gateway = f"https://teal-advanced-armadillo-537.mypinata.cloud/ipfs/{i}?pinataGatewayToken={gateway_token}"
         response = requests.request("GET",gateway)
         res = response.json()
+        res["status"] = "active"
         grids.append(res)
+
     return grids
 
 def upload_to_pinata(jsonVal):
@@ -33,9 +35,9 @@ def upload_to_pinata(jsonVal):
         
         return res["IpfsHash"]
 
-def retrieve_grids_from_pinata(hash):
+def retrieve_grids_from_pinata():
     url = "https://api.pinata.cloud/data/pinList"
-    querystring = {"cid":hash,"groupId":"21604735-a9eb-4fb3-847d-af2a511cc112"}
+    querystring = {"groupId":"21604735-a9eb-4fb3-847d-af2a511cc112"}
     headers = {"Authorization": f"Bearer {jwt_token}"}
     response = requests.request("GET", url, headers=headers, params=querystring)
     res = response.json()
@@ -43,9 +45,8 @@ def retrieve_grids_from_pinata(hash):
     _ = res["rows"]
     arr = []
     for i in _:
-        cid = _["ipfs_pin_hash"]
-        obj = get_obj(cid)
-        arr.append(obj)
+        cid = i["ipfs_pin_hash"]
+        arr.append(cid)
     return arr
 
 def add_to_group(hash):

@@ -22,10 +22,11 @@ function SelectGrid() {
   const location = useLocation();
   const navigate = useNavigate();
   const wallet = useWallet()
-  const device = location.state as {
-      name: string;
-      address: any; device?: { address: string, name: string } 
-};
+  const { device } = location.state as { 
+    device: { name: string; address: string } 
+  };
+
+  
 
   const fetchGrids = async () => {
     setLoading(true);
@@ -33,7 +34,8 @@ function SelectGrid() {
     try {
       const response = await fetch("http://127.0.0.1:5000/grids");
       const data = await response.json();
-      setGrids(data);
+      console.log(data)
+      setGrids(data["grids"]);
     } catch (err) {
       setError("Failed to fetch grids. Server might be offline.");
     } finally {
@@ -43,6 +45,8 @@ function SelectGrid() {
 
   const handleGridSelect = async (grid: string) => {
     try {
+      
+      console.log(wallet)
       let tx = await registerDevice(new PublicKey(grid), wallet)
       let txn = await wallet.signTransaction(tx.transaction);
       let url = await sendTransaction(txn);

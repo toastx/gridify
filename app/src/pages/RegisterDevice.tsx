@@ -31,6 +31,7 @@ function RegisterDevice() {
   };
 
   const handleDeviceSelect = (device: BluetoothDevice) => {
+    
     navigate('/select-grid', { state: { device } });
   };
 

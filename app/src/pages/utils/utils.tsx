@@ -40,19 +40,25 @@ export async function createGrid(wallet: any) {
 }
 
 export async function registerDevice(grid: PublicKey, wallet: any) {
+  console.log("fn called")
   let owner = new PublicKey(wallet.publicKey());
   let deviceAccount = Keypair.generate()
+  console.log(deviceAccount)
+  console.log(owner)
+
   try {
     const tx = await program.methods
       .register(grid)
       .accounts({
-        gridAccount: deviceAccount.publicKey,
+        deviceAccount: deviceAccount.publicKey,
+        gridAccount: grid,
         owner: owner,
         systemProgram: SYSTEM_PROGRAM_ADDRESS,
       })
       .signers([deviceAccount])
       .transaction()
-    
+      
+    console.log(tx)
       tx.feePayer = owner;
       tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
       tx.partialSign(deviceAccount)
