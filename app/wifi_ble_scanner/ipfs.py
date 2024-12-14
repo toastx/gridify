@@ -9,35 +9,31 @@ load_dotenv()
 jwt_token = os.getenv("PINATA_JWT_TOKEN")
 gateway_token = os.getenv("GATEWAY_TOKEN")
 
-def get_grid_objects(obj):
-    grids = []
+def get_objects(obj):
+    objs = []
     for i in obj:
         gateway = f"https://teal-advanced-armadillo-537.mypinata.cloud/ipfs/{i}?pinataGatewayToken={gateway_token}"
         response = requests.request("GET",gateway)
         res = response.json()
         res["status"] = "active"
-        grids.append(res)
+        objs.append(res)
+    return objs
 
-    return grids
-
-def upload_to_pinata(jsonVal):
-    grid = jsonVal["grid"]
-    owner = jsonVal["owner"]
+def upload_to_pinata(grid,owner):
     with open(f"{owner}.json", "w") as json_file:
         json.dump(grid, json_file, indent=4)
-
     url = "https://api.pinata.cloud/pinning/pinFileToIPFS"
     headers = {'Authorization': f'Bearer {jwt_token}'}
-
     with open(f"{owner}.json","rb") as file:
         response = requests.request("POST", url, files={'file': file}, headers=headers)
         res = response.json()
         
         return res["IpfsHash"]
 
-def retrieve_grids_from_pinata():
+
+def retrieve_from_pinata(gID):
     url = "https://api.pinata.cloud/data/pinList"
-    querystring = {"groupId":"21604735-a9eb-4fb3-847d-af2a511cc112"}
+    querystring = {"groupId":gID}
     headers = {"Authorization": f"Bearer {jwt_token}"}
     response = requests.request("GET", url, headers=headers, params=querystring)
     res = response.json()
@@ -49,8 +45,8 @@ def retrieve_grids_from_pinata():
         arr.append(cid)
     return arr
 
-def add_to_group(hash):
-    url = "https://api.pinata.cloud/groups/21604735-a9eb-4fb3-847d-af2a511cc112/cids"
+def add_to_group(hash,gID):
+    url = f"https://api.pinata.cloud/groups/{gID}/cids"
     payload = {"cids": [hash]}
     headers = {
         "Authorization": f"Bearer {jwt_token}",
@@ -58,6 +54,7 @@ def add_to_group(hash):
     }
     response = requests.request("PUT", url, json=payload, headers=headers)
     print(response.text)
+
 
 
 

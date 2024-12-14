@@ -66,6 +66,7 @@ export async function registerDevice(grid: PublicKey, wallet: any) {
       return {
         transaction: tx,
         deviceAccountPublicKey: deviceAccount.publicKey,
+      
       }
     
   } catch (error) {

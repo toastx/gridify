@@ -50,9 +50,40 @@ function SelectGrid() {
       let tx = await registerDevice(new PublicKey(grid), wallet)
       let txn = await wallet.signTransaction(tx.transaction);
       let url = await sendTransaction(txn);
+
+      let new_device = {
+        "name": device.name,
+        "address": device.address,
+        "grid":grid,
+        "status": "active",
+        "owner":wallet.publicKey()?.toString
+      }
+      let new_device_key = tx.deviceAccountPublicKey
+  
+      let post_obj = {
+        new_device_key,
+        new_device
+      }
+
+      const response = await fetch("http://127.0.0.1:5000/post_device", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(post_obj),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+        alert(data.message);
+      } else {
+        console.error("Error:", response.statusText);
+      }
+
       
       console.log(`Registering device ${device.address} to grid ${grid}`);
-      navigate('/dashboard', { state: { success: true }});
+      navigate('/monitor', { state: grids() });
     } catch (err) {
       setError("Failed to register device to grid.");
     }

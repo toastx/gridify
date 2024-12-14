@@ -7,6 +7,9 @@ from ipfs import *
 app = Flask(__name__)
 CORS(app)
 
+grid_group = "21604735-a9eb-4fb3-847d-af2a511cc112"
+device_group = "01bc70d5-a1ac-48fc-862a-0b4e03a3fdbd"
+
 @app.route("/ble", methods=["GET"])
 async def get_ble_devices():
     """
@@ -29,10 +32,11 @@ async def get_ble_devices_async():
 @app.route("/post_grid",methods=["POST"])
 async def post_grid():
     try:
-        data = request.get_json()
-        print(data)
-        cid = upload_to_pinata(data)
-        res = add_to_group(cid)
+        jsonVal = request.get_json()
+        grid = jsonVal["grid"]
+        owner = jsonVal["owner"]
+        cid = upload_to_pinata(grid,owner)
+        res = add_to_group(cid,grid_group)
         return jsonify({
             "message": "Grid Created Successfully",
         }), 200
@@ -43,14 +47,37 @@ async def post_grid():
 
 @app.route("/grids",methods=["GET"])
 async def grids():
-    grids = retrieve_grids_from_pinata()
+    grids = retrieve_from_pinata(grid_group)
     print(grids)
-    grid_data = get_grid_objects(grids)
+    grid_data = get_objects(grids)
     
     return({
         "grids": grid_data,
     })
 
+@app.route("/post_device",methods=["POST"])
+async def post_device():
+    try:
+        jsonVal = request.get_json()
+        device = jsonVal["new_device"]
+        key = jsonVal["new_device_key"]
+        cid = upload_to_pinata(device,key)
+        res = add_to_group(cid,device_group)
+        return jsonify({
+            "message": "Device Registered Successfully",
+        }), 200
+    
+    except Exception as e:
+        # Handle errors
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/devices",methods=["GET"])
+async def devices():
+    devices = retrieve_from_pinata(device_group)
+    device_data = get_objects(devices)
+    return({
+        "devices": device_data,
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

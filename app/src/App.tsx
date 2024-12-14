@@ -11,9 +11,10 @@ function App() {
   return (
     <div>
       <WalletProvider>
-      <NavBar/>
+      
         <main >
         <Router>
+          <NavBar/>
         <Routes>
           <Route path="/" component={Home} />   
           <Route path="/register" component={RegisterDevice} />
